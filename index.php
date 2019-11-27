@@ -9,11 +9,10 @@
     <meta name="author" content="Jean Philippe Vert">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <script async
-            src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" type="text/javascript"></script>
     <script async src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <link rel="stylesheet" type="text/css" href="CSS/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="CSS/personnaliser.css"/>
     <link rel="apple-touch-icon" sizes="57x57" href="Image/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="Image/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="Image/apple-icon-72x72.png">
@@ -81,44 +80,66 @@
         <?php
         include('traitement.php');
         ?>
+
         <div id="resultat_Final" class="col-sd-6 col-ld-4 col-xl-3">
+            <script>
+                function infiniteScroll(terme) {
+                    // on initialise ajaxready à true au premier chargement de la fonction
+                    $(window).data('ajaxready', true);
+                    $(window).data('relationS', true);
 
+                    $('#resultat_Final').append('<div id="loader"><p style="text-align:center"><img src="./Image/ajax-loader.gif" alt="loader ajax"></p></div>');
+
+                    let deviceAgent = navigator.userAgent.toLowerCase();
+                    let agentID = deviceAgent.match(/(iphone|ipod|ipad)/);
+
+                    $(window).scroll(function () {
+                        // On teste si ajaxready vaut false, auquel cas on stoppe la fonction
+                        if (($(window).data('ajaxready') === false) && ($(window).data('relationS') === false))
+                            return;
+
+                        function extracted(programme) {
+                            if (($(window).scrollTop() + $(window).height()) + 50 >= $(document).height()
+                                || agentID && ($(window).scrollTop() + $(window).height()) + 150 > $(document).height()) {
+                                // lorsqu'on commence un traitement, on met ajaxready à false
+                                $(window).data('ajaxready', false);
+
+                                $.post(programme, {champRecherche: terme}, function (data) {
+                                        if (data !== '') {
+                                            $('#resultat_Final #loader').before(data);
+                                            $('#resultat_Final .hidden').fadeIn(400);
+                                            // une fois tous les traitements effectués,
+                                            // on remet ajaxready à true
+                                            // afin de pouvoir rappeler la fonction
+                                            if ($(window).data('relationS') === true) {
+                                                $(window).data('relationS', false);
+                                                $(window).data('ajaxready', true);
+                                            }
+                                        }
+                                    }
+                                );
+                            }
+                        }
+
+                        // S'endormir 10 millisecondes
+                        let currentTime = new Date().getTime();
+                        while (currentTime + 10 >= new Date().getTime()) {
+                        }
+
+                        if ($(window).data('relationS') === true) {
+                            extracted('relationSortante.php');
+                        } else {
+                            extracted('relationEntrante.php');
+                            $('#resultat_Final #loader').fadeOut(400);
+                        }
+                    });
+                }
+
+                let terme = "<?php echo !empty($_POST['champRecherche']) ? htmlspecialchars($_POST['champRecherche']) : '' ?>";
+
+                infiniteScroll(terme);
+            </script>
         </div>
-        <!--  <script type="text/javascript">
-              var _0x38ec = [
-                  "\x73\x63\x72\x6F\x6C\x6C",
-                  "\x72\x65\x61\x64\x79",
-                  "\x68\x65\x69\x67\x68\x74",
-                  "\x73\x63\x72\x6F\x6C\x6C\x54\x6F\x70",
-                  "\x74\x6F\x70",
-                  "\x70\x6F\x73\x69\x74\x69\x6F\x6E",
-                  "\x23\x72\x65\x73\x75\x6C\x74\x61\x74",
-                  "\x3C\x75\x6C\x3E\x3C\x6C\x69\x3E\x3C\x61\x20\x68\x72\x65\x66\x3D\x27\x23\x27\x3E\x4C\x69\x6E\x6B\x20\x31\x3C\x2F\x61\x3E\x3C\x2F\x6C\x69\x3E\x3C\x6C\x69\x3E\x3C\x61\x20\x68\x72\x65\x66\x3D\x27\x23\x27\x3E\x4C\x69\x6E\x6B\x20\x32\x3C\x2F\x61\x3E\x3C\x2F\x6C\x69\x3E\x3C\x6C\x69\x3E\x3C\x61\x20\x68\x72\x65\x66\x3D\x27\x23\x27\x3E\x4C\x69\x6E\x6B\x20\x33\x3C\x2F\x61\x3E\x3C\x2F\x6C\x69\x3E\x3C\x2F\x75\x6C\x3E",
-                  "\x61\x70\x70\x65\x6E\x64", "\x23\x6C\x69\x6E\x6B\x73",
-                  "\x30", "\x63\x73\x73"];
-              $(document)[_0x38ec[1]](function () {
-                  $(window)[_0x38ec[0]](function () {
-                      checkOffsetAndLoad()
-                  });
-                  checkOffsetAndLoad()
-              });
-              var linksLoaded = false;
-              var commentsLoaded = false;
-
-              function checkOffsetAndLoad() {
-                  var _0x8f3ex4 = $(window)[_0x38ec[2]]()
-                      + $(window)[_0x38ec[3]]();
-                  var _0x8f3ex5 = $(_0x38ec[6])[_0x38ec[5]]()[_0x38ec[4]] + 200;
-                  if (_0x8f3ex4 > _0x8f3ex5 && !linksLoaded) {
-                      $(_0x38ec[9])[_0x38ec[8]](_0x38ec[7]);
-                      $(_0x38ec[9])[_0x38ec[11]]
-                      ({
-                          '\x6D\x69\x6E\x2D\x68\x65\x69\x67\x68\x74': _0x38ec[10]
-                      });
-                      linksLoaded = true
-                  }
-              }
-          </script>-->
     </div>
     <noscript>Votre navigateur ne supporte pas JavaScript !</noscript>
 </div>

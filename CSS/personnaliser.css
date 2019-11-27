@@ -1,0 +1,7 @@
+#resultat_Final .hidden {
+    display: none;
+}
+
+#resultat_Final #loader {
+    display: none;
+}
