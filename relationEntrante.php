@@ -14,7 +14,9 @@ function gestionRelationEntrante(array $rEntrantes)
  */
 function afficheRelationE(array $relationE)
 {
+    echo '<div id="relationEntrante">';
     gestionRelationEntrante($relationE);
+    echo '</div>';
 }
 
 // situation Terme Connue dans la BDD

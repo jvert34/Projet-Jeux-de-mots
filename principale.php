@@ -52,7 +52,7 @@ function verifieSiIdDansBDD($noeud)
  */
 function recuperationTermeParIdSurJDM(String $id)
 {
-    $output = recuperationSurJDM($id, "id");
+    $output = recuperationSurJDM($id, "id",'');
     list($positionDebut, $positionFin) = debutEtFinCode($output);
 
     if (($positionFin - $positionDebut) > 0) {
@@ -70,27 +70,27 @@ function recuperationTermeParIdSurJDM(String $id)
 }
 
 /**
- * @param String $relation
+ * @param String $idRelation
  * @return mixed|String
  */
-function recupereNonRelation(String $relation)
+function recupereNonRelation(String $idRelation)
 {
-    $existe = requeteId($relation, 'SELECT nom FROM typerelation WHERE id = :id');
+    $existe = requeteId('SELECT nom FROM typerelation WHERE id = :id', $idRelation);
 
     return '<span style="color: blue; ">' . $existe['nom'] . '</span>';
 }
 
 /**
- * @param String $relation
+ * @param String $idRelation
  * @param $requete
  * @return mixed
  */
-function requeteId(String $requete, String $relation)
+function requeteId(String $requete, String $idRelation)
 {
     $bdd = connexionBDD();
 
     $reponse = $bdd->prepare($requete);
-    $reponse->execute(array('id' => $relation));
+    $reponse->execute(array('id' => $idRelation));
     $existe = $reponse->fetch();
     $reponse->closeCursor();
 

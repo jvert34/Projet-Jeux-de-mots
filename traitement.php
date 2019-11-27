@@ -13,9 +13,10 @@ function gestionNoeudsTermes(array $noeuds_termes)
 /**
  * @param String $champRecherche
  * @param String $type
+ * @param String $relation
  * @return bool|string
  */
-function recuperationSurJDM(String $champRecherche, String $type)
+function recuperationSurJDM(String $champRecherche, String $type, String $relation)
 {
 // create curl resource
     $ch = curl_init();
@@ -28,13 +29,10 @@ function recuperationSurJDM(String $champRecherche, String $type)
         if (htmlspecialchars($_POST['rel']))
             $url .= htmlspecialchars($_POST['rel']);
 
-        $relationSortante = !empty($_POST['relationSortante']) ? htmlspecialchars($_POST['relationSortante']) : NULL;
-        if ($relationSortante)
-            $url .= '&relout=' . $relationSortante;
-
-        $relationEntrante = !empty($_POST['relationEntrante']) ? htmlspecialchars($_POST['relationEntrante']) : NULL;
-        if ($relationEntrante)
-            $url .= '&relin=' . $relationEntrante;
+        if (strcmp($relation, "relout") === 0)
+            $url .= '&relin=norelin';
+        else if (strcmp($relation, "relin") === 0)
+            $url .= '&relout=norelout';
     }
     curl_setopt($ch, CURLOPT_URL, $url);
 
@@ -176,7 +174,7 @@ function affiche(String $description, array $noeud)
  */
 function situationTermeNonConnue(string $champRecherche, PDO $bdd)
 {
-    $output = recuperationSurJDM(mb_convert_encoding($champRecherche, 'latin1'), "terme");
+    $output = recuperationSurJDM(mb_convert_encoding($champRecherche, 'latin1'), "terme", "relout");
     list($positionDebut, $positionFin) = debutEtFinCode($output);
     if (($positionFin - $positionDebut) > 0) {
         $code = substr($output, $positionDebut, ($positionFin - $positionDebut));
@@ -186,12 +184,22 @@ function situationTermeNonConnue(string $champRecherche, PDO $bdd)
 //        $var2 = utf8_encode($text[2]);
         $noeuds_termes = preg_split("/[\n,]+/", substr(utf8_encode($text[3]), 66));
 //        $typesRelations = utf8_encode($text[4]);
-        $rSortantes = preg_split("/[\n,]+/", substr(utf8_encode(htmlspecialchars($text[5])), 51));
-        $rEntrantes = !empty($text[6]) ? preg_split("/[\n,]+/", substr(utf8_encode(htmlspecialchars($text[6])), 51)) : '';
         $lesNPremierNoeud = lesNPremier(recupereNomPoidsEtTrieSurPoidsDecroisant($noeuds_termes), 'noeud');
-        $lesNPremierRelationEntrantes = lesNPremier(recupereRelationPoidsEtTrieSurPoidsDecroisant($rEntrantes), 'relation');
-        $lesNPremierRelationSortantes = lesNPremier(recupereRelationPoidsEtTrieSurPoidsDecroisant($rSortantes), 'relation');
         affiche($definition, separationDonne($lesNPremierNoeud));
+
+        $rSortantes = !empty($text[5]) ? preg_split("/[\n,]+/", substr(utf8_encode(htmlspecialchars($text[5])), 52)) : '';
+        $lesNPremierRelationSortantes = lesNPremier(recupereRelationPoidsEtTrieSurPoidsDecroisant($rSortantes), 'relation');
+
+        $lesNPremierRelationEntrantes = '';
+        $output = recuperationSurJDM(mb_convert_encoding($champRecherche, 'latin1'), "terme", "relin");
+        list($positionDebut, $positionFin) = debutEtFinCode($output);
+        if (($positionFin - $positionDebut) > 0) {
+            $code = substr($output, $positionDebut, ($positionFin - $positionDebut));
+            $text = explode('//', $code);
+
+            $rEntrante = !empty($text[5]) ? preg_split("/[\n,]+/", substr(utf8_encode(htmlspecialchars($text[5])), 52)) : '';
+            $lesNPremierRelationEntrantes = lesNPremier(recupereRelationPoidsEtTrieSurPoidsDecroisant($rEntrante), 'relation');
+        }
 
         remplieTableJeuxDeMots($bdd, $champRecherche, $definition, $lesNPremierNoeud, $lesNPremierRelationEntrantes, $lesNPremierRelationSortantes);
         remplieTableEid($bdd, $id, $champRecherche);

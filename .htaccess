@@ -42,7 +42,7 @@ ExpiresByType image/x-icon "access plus 1 year"
 
 <IfModule mod_headers.c>
 Header always set X-FRAME-OPTIONS "DENY"
-Header set Content-Security-Policy: "script-src 'unsafe-inline' https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js; base-uri 'self';"
+Header set Content-Security-Policy: "script-src 'unsafe-inline' https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js 'self'; base-uri 'self';"
 Header always set X-XSS-Protection "1; mode=block"
 Header always set X-Content-Type-Options "nosniff"
 Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains"
