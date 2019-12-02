@@ -21,10 +21,13 @@ function recuperationSurJDM(String $champRecherche, String $type, String $relati
 // create curl resource
     $ch = curl_init();
 
+    $champRecherche = mb_convert_encoding($champRecherche, 'latin1');
     // set url
-    if (strcmp($type, "id") === 0)
+    if (strcmp($type, "id") === 0) {
         $url = 'http://www.jeuxdemots.org/rezo-dump.php?goid=' . $champRecherche . '&relout=norelout&relin=norelin';
-    else {
+    } else if (strcmp($type, "generique") === 0) {
+        $url = 'www.jeuxdemots.org/diko.php?gotermrel=' . rawurlencode($champRecherche) . '%';
+    } else {
         $url = 'http://www.jeuxdemots.org/rezo-dump.php?gotermsubmit=Chercher&gotermrel=' . $champRecherche . '&rel=';
         if (htmlspecialchars($_POST['rel']))
             $url .= htmlspecialchars($_POST['rel']);
@@ -174,7 +177,7 @@ function affiche(String $description, array $noeud)
  */
 function situationTermeNonConnue(string $champRecherche, PDO $bdd)
 {
-    $output = recuperationSurJDM(mb_convert_encoding($champRecherche, 'latin1'), "terme", "relout");
+    $output = recuperationSurJDM($champRecherche, "terme", "relout");
     list($positionDebut, $positionFin) = debutEtFinCode($output);
     if (($positionFin - $positionDebut) > 0) {
         $code = substr($output, $positionDebut, ($positionFin - $positionDebut));
@@ -191,7 +194,7 @@ function situationTermeNonConnue(string $champRecherche, PDO $bdd)
         $lesNPremierRelationSortantes = lesNPremier(recupereRelationPoidsEtTrieSurPoidsDecroisant($rSortantes), 'relation');
 
         $lesNPremierRelationEntrantes = '';
-        $output = recuperationSurJDM(mb_convert_encoding($champRecherche, 'latin1'), "terme", "relin");
+        $output = recuperationSurJDM($champRecherche, "terme", "relin");
         list($positionDebut, $positionFin) = debutEtFinCode($output);
         if (($positionFin - $positionDebut) > 0) {
             $code = substr($output, $positionDebut, ($positionFin - $positionDebut));
@@ -241,5 +244,8 @@ function situationTermeConnue(PDO $bdd, string $champRecherche)
 }
 
 if (!empty($champRecherche)) {
-    lancementDeLaRecheche($champRecherche);
+    if ($generique)
+        include 'generique.php';
+    else
+        lancementDeLaRecherche($champRecherche);
 }

@@ -2,6 +2,7 @@
 const constN = 20;
 
 $champRecherche = !empty($_POST['champRecherche']) ? htmlspecialchars($_POST['champRecherche']) : NULL;
+$generique = !empty($_POST['BoutonsGenerique']) ? true : false;
 
 /**
  * @param array $array
@@ -61,9 +62,7 @@ function recuperationTermeParIdSurJDM(String $id)
         if (!empty($code)) {
             $def = substr(utf8_encode($code), 24);
             $pFin = strpos($def, '\' (');
-            $terme = substr($def, 0, $pFin);
-
-            return $terme;
+            return substr($def, 0, $pFin);
         }
     }
     return $id;
@@ -168,9 +167,7 @@ function recupereId(string $definition)
 {
     $positionDebut = strpos($definition, '(') + 5;
     $positionFin = strpos($definition, ')');
-    $id = substr($definition, $positionDebut, ($positionFin - $positionDebut));
-
-    return $id;
+    return substr($definition, $positionDebut, ($positionFin - $positionDebut));
 }
 
 /**
@@ -179,8 +176,7 @@ function recupereId(string $definition)
  */
 function separationDonne($donnes)
 {
-    $var = explode('//', $donnes);
-    return $var;
+    return explode('//', $donnes);
 }
 
 /**
@@ -226,7 +222,7 @@ function connexionBDD(): PDO
 /**
  * @param string $champRecherche
  */
-function lancementDeLaRecheche(string $champRecherche)
+function lancementDeLaRecherche(string $champRecherche)
 {
     $bdd = connexionBDD();
 

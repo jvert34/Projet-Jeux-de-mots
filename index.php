@@ -47,6 +47,8 @@
                    class="form-control"/>
             <input id="BoutonsSoumission" name="BoutonsSoumission" type="submit" value="Chercher"
                    class="btn btn-primary"/>
+            <input id="BoutonsGenerique" name="BoutonsGenerique" type="submit" value="Chercher les termes génériques"
+                   class="btn btn-primary"/>
             <fieldset>
                 <legend> Options</legend>
                 <label>
