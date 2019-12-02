@@ -8,7 +8,7 @@ function infiniteScroll(terme) {
     $(window).data('ajaxready', true);
     $(window).data('relationS', true);
 
-    $('#resultat_Final').append('<div id="loader"><p style="text-align:center"><img src="../Image/ajax-loader.gif" alt="loader ajax"></p></div>');
+    $('#resultat_Final').append('<div id="loader"><div class="d-flex justify-content-center"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div></div>');
 
     let deviceAgent = navigator.userAgent.toLowerCase();
     let agentID = deviceAgent.match(/(iphone|ipod|ipad)/);
