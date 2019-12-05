@@ -1,29 +1,27 @@
 <?php
 $champRecherche = !empty($_POST['champRecherche']) ? htmlspecialchars($_POST['champRecherche']) : NULL;
-///**
-// * @param String $id
-// * @return string
-// */
-//function recuperationTermeGenerique(String $termes)
-//{
-$output = recuperationSurJDM($champRecherche, "generique", '');
-list($positionDebut, $positionFin) = debutEtFinGenerique($output);
+/**
+ * @param String $termes
+ */
+function recuperationTermeGenerique(String $termes)
+{
+    $output = recuperationSurJDM($termes, "generique", '');
+    list($positionDebut, $positionFin) = debutEtFinGenerique($output);
 
-if (($positionFin - $positionDebut) > 0) {
-    $code = substr($output, $positionDebut, ($positionFin - $positionDebut));
-}
-$generique = !empty($code) ? preg_split("/[\n,]+/", strip_tags($code)) : '';
-$termesG = '';
-
-foreach ($generique as $termeG) {
-    if (strlen($termeG) != 0) {
-        $termesG .= PHP_EOL . '<article><a href="#" onclick="Go(' . $termeG . ')"><b>' . $termeG . '</b></a></article>';
+    if (($positionFin - $positionDebut) > 0) {
+        $code = substr($output, $positionDebut, ($positionFin - $positionDebut));
     }
-}
+    $generique = !empty($code) ? preg_split("/[\n,]+/", strip_tags($code)) : '';
+    $termesG = '';
 
-print_r($termesG);
-remplieTableTermesGenerique($champRecherche, $termesG);
-//}
+    foreach ($generique as $termeG) {
+        if (strlen($termeG) != 0) {
+            $termesG .= PHP_EOL . '<article><a href="#" onclick="Go(' . $termeG . ')"><b>' . $termeG . '</b></a></article>';
+        }
+    }
+    remplieTableTermesGenerique($termes, $termesG);
+    print_r($termesG);
+}
 
 /**
  * @param $output
@@ -38,15 +36,35 @@ function debutEtFinGenerique($output): array
 }
 
 /**
- * @param string $listeTermes
+ * @param string $termesGenerique
  * @param string $terme
  */
-function remplieTableTermesGenerique(string $terme, string $listeTermes)
+function remplieTableTermesGenerique(string $terme, string $termesGenerique)
 {
     $bdd = connexionBDD();
-    $req = $bdd->prepare('INSERT INTO termesGenerique (terme, listeDesTermesGenerique) VALUES(:terme, :listeDesTermesGenerique)');
+    $req = $bdd->prepare('INSERT INTO termesgenerique (terme, termesGenerique) VALUES(:terme, :generique)');
     $req->execute(array(
         'terme' => $terme,
-        'listeDesTermesGenerique' => $listeTermes
-    ));
+        'generique' => $termesGenerique));
+}
+
+/**
+ * @param string $terme
+ * @return mixed
+ */
+function existeTermesGenerique(string $terme)
+{
+    $bdd = connexionBDD();
+    $reponse = $bdd->prepare('SELECT termesGenerique FROM termesgenerique WHERE terme = :terme');
+    $reponse->execute(array('terme' => $terme));
+    $existe = $reponse->fetch();
+
+    return $existe['termesGenerique'];
+}
+
+$existe = existeTermesGenerique($champRecherche);
+if (!empty($existe)) {
+    echo $existe;
+} else {
+    recuperationTermeGenerique($champRecherche);
 }
