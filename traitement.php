@@ -7,7 +7,6 @@ include 'principale.php';
 function gestionNoeudsTermes(array $noeuds_termes)
 {
     gestion($noeuds_termes, "<br> Termes en relation avec le terme recherché", 'blue');
-    // On ajoute une entrée dans la table jeux_video
 }
 
 /**

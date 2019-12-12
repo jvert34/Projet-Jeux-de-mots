@@ -14,7 +14,7 @@ function gestionRelationEntrante(array $rEntrantes)
  */
 function afficheRelationE(array $relationE)
 {
-    echo '<div id="relationEntrante">';
+    echo '<div id="relationEntrante" class="col-xl">';
     gestionRelationEntrante($relationE);
     echo '</div>';
 }

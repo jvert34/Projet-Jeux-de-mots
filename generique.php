@@ -1,5 +1,6 @@
 <?php
 $champRecherche = !empty($_POST['champRecherche']) ? htmlspecialchars($_POST['champRecherche']) : NULL;
+
 /**
  * @param String $termes
  */
@@ -16,11 +17,11 @@ function recuperationTermeGenerique(String $termes)
 
     foreach ($generique as $termeG) {
         if (strlen($termeG) != 0) {
-            $termesG .= PHP_EOL . '<article><a href="#" onclick="Go(' . $termeG . ')"><b>' . $termeG . '</b></a></article>';
+            $termesG .= PHP_EOL . '<article class="col-md-6 text-center"><a href="#" onclick="Go(' . $termeG . ')"><b>' . $termeG . '</b></a></article>';
         }
     }
-    remplieTableTermesGenerique($termes, $termesG);
     print_r($termesG);
+    remplieTableTermesGenerique($termes, $termesG);
 }
 
 /**
