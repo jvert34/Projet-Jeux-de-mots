@@ -2,6 +2,9 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} !^www\.
 RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
 
+# les proxys ne doivent pas décompresser le contenu à la place de l'internaute
+Header append Vary User-Agent env=!dont-vary
+
 #Activation du Mod Deflate
 <IfModule mod_deflate.c>
   # Compresse les fichiers HTML, CSS, JavaScript, Text, XML et les fonts

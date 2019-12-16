@@ -222,14 +222,13 @@
         </div>
     </form>
     <div class="container-fluid" id="resultat">
-        <!--        <div class="row">-->
         <?php
         include('traitement.php');
         ?>
-        <!--        </div>-->
         <div id="resultat_Final" class="row">
             <script src="JS/fonction.js"></script>
             <script>
+
                 let terme = "<?php echo !empty($_POST['champRecherche']) ? htmlspecialchars($_POST['champRecherche']) : '' ?>";
                 let generique = <?php echo !empty($_POST['BoutonsGenerique']) ? 1 : 0 ?>;
 

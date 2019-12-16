@@ -1,12 +1,12 @@
 <?php
-include 'principale.php';
+include_once 'principale.php';
 
 /**
  * @param array $noeuds_termes
  */
 function gestionNoeudsTermes(array $noeuds_termes)
 {
-    gestion($noeuds_termes, "<br> Termes en relation avec le terme recherché", 'blue');
+    gestion($noeuds_termes, "Termes en relation avec le terme recherché", 'blue');
 }
 
 /**
@@ -26,10 +26,13 @@ function recuperationSurJDM(String $champRecherche, String $type, String $relati
         $url = 'http://www.jeuxdemots.org/rezo-dump.php?goid=' . $champRecherche . '&relout=norelout&relin=norelin';
     } else if (strcmp($type, "generique") === 0) {
         $url = 'www.jeuxdemots.org/diko.php?gotermrel=' . rawurlencode($champRecherche) . '%';
+    } else if (strcmp($type, "def") === 0) {
+        $url = 'www.jeuxdemots.org/diko.php?gotermrel=' . rawurlencode($champRecherche);
     } else {
         $url = 'http://www.jeuxdemots.org/rezo-dump.php?gotermsubmit=Chercher&gotermrel=' . $champRecherche . '&rel=';
         if (htmlspecialchars($_POST['rel']))
-            $url .= htmlspecialchars($_POST['rel']);
+            if (strcmp($_POST['rel'], 'Choix Relation') != 0)
+                $url .= htmlspecialchars($_POST['rel']);
 
         if (strcmp($relation, "relout") === 0)
             $url .= '&relin=norelin';
@@ -45,6 +48,7 @@ function recuperationSurJDM(String $champRecherche, String $type, String $relati
     $output = curl_exec($ch);
     // close curl resource to free up system resources
     curl_close($ch);
+
     return $output;
 }
 
@@ -159,7 +163,7 @@ function remplieTableJeuxDeMots(PDO $bdd, string $champRecherche, string $defini
  */
 function affiche(String $description, array $noeud)
 {
-    echo '<span style="color: fuchsia; ">' . 'Terme rechercher<b>' . $description . '</b></span><br>';
+    echo '<div id="definition">' . PHP_EOL . '<h4> Terme rechercher : <b>' . $description . '</div><br>';
 //    echo '<span style="color: green; ">' . $var2 . '</span><br/><br/>';
 
     $boolTrie = !empty($_POST['trieAlphabetique']) ? true : false;

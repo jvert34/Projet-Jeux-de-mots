@@ -1,7 +1,12 @@
+@charset "utf-8";
 #resultat_Final .hidden {
-    display: none;
+    display: none
 }
 
 #resultat_Final #loader {
-    display: none;
+    display: none
+}
+
+#definition {
+    color: #f0f
 }
