@@ -1,3 +1,9 @@
+# PH pagespeed start
+<IfModule pagespeed_module>
+ModPagespeed on
+ModPagespeedRewriteLevel PassThrough
+</IfModule>
+# PH pagespeed end 
 RewriteEngine On
 RewriteCond %{HTTP_HOST} !^www\.
 RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
@@ -36,16 +42,22 @@ Header append Vary User-Agent env=!dont-vary
   BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
   Header append Vary User-Agent
 </IfModule>
+
 #Activation du mod Expires
 <IfModule mod_expires.c>
 ExpiresActive On
-ExpiresByType text/css "access plus 1 year"
+ExpiresDefault "access plus 1 month"
 ExpiresByType image/x-icon "access plus 1 year"
+ExpiresByType image/gif "access plus 1 month"
+ExpiresByType image/png "access plus 1 month"
+ExpiresByType image/jpeg "access plus 1 month"
+ExpiresByType text/css "access plus 1 year"
+ExpiresByType application/javascript "access plus 1 year"
 </IfModule>
 
 <IfModule mod_headers.c>
 Header always set X-FRAME-OPTIONS "DENY"
-Header set Content-Security-Policy: "script-src 'unsafe-inline' https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js 'self'; base-uri 'self';"
+Header set Content-Security-Policy: "script-src 'unsafe-inline' 'self'; base-uri 'self';"
 Header always set X-XSS-Protection "1; mode=block"
 Header always set X-Content-Type-Options "nosniff"
 Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains"

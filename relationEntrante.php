@@ -6,7 +6,7 @@ include 'principale.php';
  */
 function gestionRelationEntrante(array $rEntrantes)
 {
-    gestion($rEntrantes, 'relations Entrantes:', 'orangered');
+    gestion($rEntrantes, 'relations Entrantes:', 'relationE');
 }
 
 /**

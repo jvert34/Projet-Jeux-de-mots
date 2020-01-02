@@ -6,7 +6,7 @@ include 'principale.php';
  */
 function gestionRelationSortante(array $rSortantes)
 {
-    gestion($rSortantes, 'relations Sortante', 'turquoise');
+    gestion($rSortantes, 'relations Sortante', 'relationS');
 }
 
 /**

@@ -1,5 +1,5 @@
 <?php
-include_once 'principale.php';
+include 'generale.php';
 
 /**
  * @param String $terme
@@ -12,17 +12,29 @@ function recuperationDefiniction(String $terme)
     if (($positionFin - $positionDebut) > 0) {
         $code = substr($output, $positionDebut, ($positionFin - $positionDebut));
     }
-    $definiction = !empty($code) ? preg_split("/[\n]+/", strip_tags($code)) : '';
-    $termesD = '';
+    if (!empty($code)) {
+        $definiction = preg_split("/[\n]+/",
+            preg_replace('{(<br>(<br>)+)+}', '<br/>', strip_tags(preg_replace('`<script[^>]*>.+?</script>`is', '', $code))));
+        $termesD = '';
 
-    foreach ($definiction as $termeD) {
-        if (strlen($termeD) != 0) {
-            if (strlen($termeD) != 7 && strcmp($termeD, "	&nbsp;") != 0)
-                $termesD .= PHP_EOL . '<br>' . utf8_encode($termeD);
+        foreach ($definiction as $termeD) {
+            if (strlen($termeD) != 0) {
+                if (strlen($termeD) != 7 && strcmp($termeD, "	&nbsp;") != 0)
+                    $termesD .= PHP_EOL . '<br>' . utf8_encode($termeD);
+            }
         }
-    }
 
-    remplieDefiniction($terme, $termesD);
+        str_replace("<br>	&nbsp;", "", $termesD);
+
+        remplieDefiniction($terme, $termesD);
+    } else {
+        $bdd = connexionBDD();
+        $req = $bdd->prepare('UPDATE jeuxdemots SET chercheDefinition = :chercheDefinition WHERE terme = :terme');
+        $req->execute(array(
+            'terme' => $terme,
+            'chercheDefinition' => 0
+        ));
+    }
 }
 
 /**
@@ -52,13 +64,15 @@ function remplieDefiniction(string $terme, string $definiction)
     $existe = $reponse->fetch();
 
     $eid = $existe['id'];
-    $definiction = '\'' . $terme . '\' (eid=' . $eid . ') </b></h4>' . $definiction . PHP_EOL;
-    str_replace("<br>	&nbsp;", "", $definiction);
+    $definiction = '\'' . $terme . '\' (eid=' . $eid . ') </b></h4></summary>' . $definiction . PHP_EOL;
 
-    $req = $bdd->prepare('UPDATE jeuxdemots SET description = :description WHERE terme = :terme');
+    echo '<summary><h4> Terme rechercher : <b>' . $definiction;
+    $req = $bdd->prepare('UPDATE jeuxdemots SET description = :description, chercheDefinition = :chercheDefinition WHERE terme = :terme');
     $req->execute(array(
         'terme' => $terme,
-        'description' => $definiction));
+        'description' => $definiction,
+        'chercheDefinition' => 0
+    ));
 }
 
 /**
@@ -68,18 +82,16 @@ function remplieDefiniction(string $terme, string $definiction)
 function existeDefiniction(string $terme)
 {
     $bdd = connexionBDD();
-    $reponse = $bdd->prepare('SELECT description FROM jeuxdemots WHERE terme = :terme');
+    $reponse = $bdd->prepare('SELECT chercheDefinition FROM jeuxdemots WHERE terme = :terme');
     $reponse->execute(array('terme' => $terme));
     $existe = $reponse->fetch();
 
-    return $existe['description'];
+    return $existe['chercheDefinition'];
 }
 
 if (!empty($champRecherche)) {
     $existe = existeDefiniction($champRecherche);
-    if (empty($existe)) {
-        echo $existe;
-    } else {
+    if (strcmp($existe, "1") === 0) {
         recuperationDefiniction($champRecherche);
     }
 }

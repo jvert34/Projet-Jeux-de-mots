@@ -17,10 +17,11 @@ function recuperationTermeGenerique(String $termes)
 
     foreach ($generique as $termeG) {
         if (strlen($termeG) != 0) {
-            $termesG .= PHP_EOL . '<article class="col-md-6 text-center"><a href="#" onclick="Go(' . $termeG . ')"><b>' . $termeG . '</b></a></article>';
+            $termesG .= PHP_EOL . '<article class="col-lg-3 col-md-4 col-sm-6 text-center"><a href="#" onclick="Go(\'' . $termeG . '\')"><b>' . $termeG . '</b></a></article>';
         }
     }
-    print_r($termesG);
+    echo '<div class="row">' . $termesG . '</div>';
+
     remplieTableTermesGenerique($termes, $termesG);
 }
 
@@ -65,7 +66,7 @@ function existeTermesGenerique(string $terme)
 
 $existe = existeTermesGenerique($champRecherche);
 if (!empty($existe)) {
-    echo $existe;
+    echo '<div class="row">' . $existe . '</div>';
 } else {
     recuperationTermeGenerique($champRecherche);
 }

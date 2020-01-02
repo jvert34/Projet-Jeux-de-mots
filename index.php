@@ -9,11 +9,6 @@
     <meta name="author" content="Jean Philippe Vert">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
-            type="text/javascript"></script>
-    <script async src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="CSS/bootstrap.min.css"/>
-    <link rel="stylesheet" type="text/css" href="CSS/personnaliser.css"/>
     <link rel="apple-touch-icon" sizes="57x57" href="Image/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="Image/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="Image/apple-icon-72x72.png">
@@ -31,31 +26,35 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="Image/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
+    <script src="JS/jquery-3.4.1.min.js"></script>
+    <script async src="JS/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="CSS/personnaliser.css"/>
 </head>
 <body>
 <div class="container">
-    <h1 style="text-align: center;">Jeux de mots</h1>
+    <!--    <h1>Jeux de mots</h1>-->
+    <figure>
+        <img src="Image/Logo_JDMrect_fond_transp.png" alt="Image jeux de mots"/>
+    </figure>
 </div>
 
-<br/>
 <div class="container">
     <form method="POST" name="rechercheTermes">
         <div class="form-group">
             <label for="champRecherche"> </label>
 
-            <input id="champRecherche" name="champRecherche" placeholder="Terme recherché" type="search" autofocus
+            <input autocapitalize="off" id="champRecherche" name="champRecherche" placeholder="Terme recherché" type="search" autofocus
                    value="<?php echo !empty($_POST['champRecherche']) ? htmlspecialchars($_POST['champRecherche']) : '' ?>"
                    class="form-control"/>
             <input id="BoutonsSoumission" name="BoutonsSoumission" type="submit" value="Chercher"
                    class="btn btn-primary"/>
-            <input id="BoutonsGenerique" name="BoutonsGenerique" type="submit" value="Demander les termes génériques"
+            <input id="BoutonsGenerique" name="BoutonsGenerique" type="submit"
+                   value="Demander les termes commençant par"
                    class="btn btn-primary"/>
             <fieldset>
-                <legend> Options</legend>
                 <div class="row">
                     <label>
-                        <select id="rel" name="rel" class="cus
-                        tom-select col-md">
+                        <select id="rel" name="rel" class="custom-select col-md">
                             <option selected="">Choix Relation</option>
                             <option value="75">r_accomp</option>
                             <option value="40">r_action-verbe</option>
@@ -100,7 +99,7 @@
                             <option value="41">r_conseq</option>
                             <option value="200">r_context</option>
                             <option value="555">r_cooccurrence</option>
-                            <option value="18">r_data</option>
+                            <option value="18" class="relationI">r_data</option>
                             <option value="104">r_deplac_mode</option>
                             <option value="99">r_der_morpho</option>
                             <option value="151">r_descend_de</option>
@@ -112,7 +111,6 @@
                             <option value="33">r_error</option>
                             <option value="22">r_family</option>
                             <option value="60">r_fem</option>
-                            <option value="12">r_flpot</option>
                             <option value="117">r_foncteur</option>
                             <option value="103">r_has_actors</option>
                             <option value="21">r_has_antimagn</option>
@@ -127,7 +125,7 @@
                             <option value="8">r_hypo</option>
                             <option value="57">r_implication</option>
                             <option value="127">r_incompatible</option>
-                            <option value="36">r_infopot</option>
+                            <option value="36" class="relationI">r_infopot</option>
                             <option value="999">r_inhib</option>
                             <option value="16">r_instr</option>
                             <option value="25">r_instr-1</option>
@@ -213,27 +211,45 @@
                         <input id="relationEntrante" name="relationEntrante" type="checkbox" value="norelin"/>
                         <label for="relationEntrante">Pas de relations entrantes</label>
                     </div>
-                    <div class="checkbox col-xl">
+                </div>
+                <div class="row">
+                    <div class="checkbox col-md">
                         <input id="trieAlphabetique" name="trieAlphabetique" type="checkbox" value="tAlpha"/>
                         <label for="trieAlphabetique">Résultats triés alphabétiquement</label>
                     </div>
+                    <div class="checkbox col-md">
+                        <label for="nbElem">Nombre d'éléments désirés : </label>
+                        <input id="nbElem" name="nbElem" type="number"
+                               value="<?php echo !empty($_POST['nbElem']) ? htmlspecialchars($_POST['nbElem']) : 10 ?>"
+                               min="5" max="1000"
+                               step="5">
+                    </div>
                 </div>
+                <legend> Options</legend>
             </fieldset>
         </div>
     </form>
+    <script src="JS/recupereDefiniction.js"></script>
     <div class="container-fluid" id="resultat">
+        <script src="JS/affichage.js"></script>
         <?php
         include('traitement.php');
         ?>
         <div id="resultat_Final" class="row">
-            <script src="JS/fonction.js"></script>
             <script>
-
                 let terme = "<?php echo !empty($_POST['champRecherche']) ? htmlspecialchars($_POST['champRecherche']) : '' ?>";
+                let nb = "<?php echo !empty($_POST['nbElem']) ? htmlspecialchars($_POST['nbElem']) : '' ?>";
                 let generique = <?php echo !empty($_POST['BoutonsGenerique']) ? 1 : 0 ?>;
 
                 if (!generique)
-                    infiniteScroll(terme);
+                    infiniteScroll(terme, nb);
+            </script>
+            <a id="back-to-top" href="#" class="btn btn-light btn-lg back-to-top" role="button">
+                <i class="icon-chevron-up"></i>
+            </a>
+            <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+            <script>
+                $('#back-to-top').fadeOut(50);
             </script>
         </div>
     </div>
