@@ -29,6 +29,7 @@
     <script src="JS/jquery-3.4.1.min.js"></script>
     <script async src="JS/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="CSS/personnaliser.css"/>
+    <link rel="stylesheet" type="text/css" href="CSS/jquery-ui.css">
 </head>
 <body>
 <div class="container">
@@ -43,7 +44,8 @@
         <div class="form-group">
             <label for="champRecherche"> </label>
 
-            <input autocapitalize="off" id="champRecherche" name="champRecherche" placeholder="Terme recherché" type="search" autofocus
+            <input autocapitalize="off" id="champRecherche" name="champRecherche" placeholder="Terme recherché"
+                   type="search" autofocus
                    value="<?php echo !empty($_POST['champRecherche']) ? htmlspecialchars($_POST['champRecherche']) : '' ?>"
                    class="form-control"/>
             <input id="BoutonsSoumission" name="BoutonsSoumission" type="submit" value="Chercher"
@@ -217,6 +219,10 @@
                         <input id="trieAlphabetique" name="trieAlphabetique" type="checkbox" value="tAlpha"/>
                         <label for="trieAlphabetique">Résultats triés alphabétiquement</label>
                     </div>
+                     <!--<div class="checkbox col-md">
+                        <input id="donneeBrut" name="donneeBrut" type="checkbox" value="brut"/>
+                        <label for="donneeBrut">Résultats en données brut</label>
+                    </div>-->
                     <div class="checkbox col-md">
                         <label for="nbElem">Nombre d'éléments désirés : </label>
                         <input id="nbElem" name="nbElem" type="number"
@@ -248,8 +254,19 @@
                 <i class="icon-chevron-up"></i>
             </a>
             <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+            <script src="JS/jquery-ui.min.js"></script>
             <script>
                 $('#back-to-top').fadeOut(50);
+
+                $(function () {
+                    $('#champRecherche').autocomplete({
+                        source: 'liste.php',
+                        select: function (event, ui) {
+                            Go(ui.item.value); // lance la recherche avec la valeur de la proposition.
+                        },
+                        minLength: 3 // on indique qu'il faut taper au moins 3 caractères pour afficher l'autocomplétion
+                    });
+                });
             </script>
         </div>
     </div>
