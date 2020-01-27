@@ -3,7 +3,7 @@ include 'generale.php';
 
 ini_set('max_execution_time',3600);
 // 1 : on ouvre le fichier
-$monfichier = fopen('11112019-LEXICALNET-JEUXDEMOTS-ENTRIES.txt', 'r');
+$monfichier = fopen('01012020-LEXICALNET-JEUXDEMOTS-ENTRIES.txt', 'r');
 
 // 2 : on lit la première ligne du fichier
 $bdd = connexionBDD();
